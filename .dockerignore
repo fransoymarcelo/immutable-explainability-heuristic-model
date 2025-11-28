@@ -1,0 +1,41 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.log
+*.tmp
+*.DS_Store
+.env*
+.vscode/
+.idea/
+.git/
+.gitignore
+**/__pycache__/
+data/
+audio/
+*.wav
+*.mp3
+*.flac
+*.m4a
+tests/
+*/.pytest_cache/
+*/.mypy_cache/
+
+# Ignorar el venv local
+venv/
+.venv/
+
+# Ignorar el venv del contenedor (no debería estar local, pero por si acaso)
+/app/venv/
+
+# Ignorar archivos configuración
+.dockerignore
+Dockerfile
+
+# Ignorar archivos de auditoría y contrato (se montan, no se copian)
+audit/
+contract_info.json
+
+# Ignorar archivos de entorno
+.env

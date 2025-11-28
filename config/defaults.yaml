@@ -1,0 +1,88 @@
+models:
+  whisper_size: "small"
+  use_mfcc: false
+  text_backend: "heuristic"
+  audio_backend: "heuristic"
+
+fusion:
+  fuzzy_ruleset: "core/ruleset/default.yaml"
+  fusion_simple:
+    text_confidence_thresh: 0.6
+    asr_confidence_thresh: 0.75
+    audio_confidence_thresh: 0.6
+    audio_arousal_thresh: 0.6
+  asr_modulation:
+    coverage_floor: 0.35
+    coverage_low_factor: 0.6
+    text_conf_floor: 0.45
+    text_conf_low_factor: 0.7
+    cap_min: 0.2
+    cap_max: 0.85
+  post_fuzzy:
+    high_conf_cap: 0.70
+    low_evidence_cap: 0.55
+    neutral_audio_relief: 0.14
+    audio_conf_boost: 0.12
+    audio_non_neutral_threshold: 0.50
+    audio_override_cap: 0.60
+    min_weight: 0.18
+    max_weight: 0.78
+
+guardrails:
+  thresholds:
+    fear: 0.70
+    anger: 0.85
+    sadness: 0.85
+    arousal: 0.8
+    valence_neg: -0.4
+  risk_keywords:
+    - "\\bsuicid"
+    - "\\bauto?lesi"
+    - "\\blastim"
+    - "\\bno quiero vivir"
+    - "\\bquitarme la vida"
+    - "quitar.*vida"
+    - "me quiero quitar.*vida"
+    - "quiero quitarme.*vida"
+    - "\\bquitarme\\b"
+  templates:
+    safe: "Lo siento; esto suena serio. No soy el recurso adecuado para emergencias."
+    soft: "Entiendo; gracias por compartir. ¿Podés contarme un poco más para que te pueda ayudar mejor?"
+
+paths:
+  audit_dir: "audit"
+  audit_file: "events.log"
+  dynamic_lexicon: "data/spanish-mea-corpus-2023/spanish-meacorpus-2023-dataset.csv"
+  escalation_webhook: null
+
+metrics:
+  port: 9000
+
+audio:
+  ema_alpha: 0.2
+  base_neutral: 0.60
+  wav_confidence: 0.65
+  other_confidence: 0.50
+
+text:
+  fallback_neutral: 0.50
+  dynamic_lexicon:
+    min_freq: 2
+    min_ratio: 1.4
+
+pii:
+  patterns:
+    email: "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+    phone: "\\b(\\+?54\\s?9?\\s?)?(?:(0\\d{2,4}|\\(?\\d{2,4}\\)?)\\s?)?(15\\s?)?(\\d{6,8}|\\d{4}[\\s\\-]\\d{4})\\b"
+
+blockchain:
+  enabled: false
+  contract_info_path: "contract_info.json"
+  rpc_url_env: "RPC_URL"
+  private_key_env: "PRIVATE_KEY"
+  gas_limit: 120000
+  wait_for_receipt: true
+
+runtime:
+  run_id_prefix_length: 8
+

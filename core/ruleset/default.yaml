@@ -1,0 +1,63 @@
+version: 1
+
+universe:
+  asr_conf: [0.0, 1.0]    # Do not change (fixed scale)
+  arousal:  [0.0, 1.0]    # Same
+  valence:  [-1.0, 1.0]   # Same
+  w_text:   [0.0, 1.0]    # Output (0..1)
+
+membership:
+  asr_conf:
+    # If you want "high" to start earlier, lower 0.5 to 0.4
+    low:  [0.0, 0.0, 0.5]
+    mid:  [0.3, 0.55, 0.8]
+    high: [0.65, 1.0, 1.0]
+
+  arousal:
+    # Shift triangles to the right if your audio is generally more energetic
+    low:  [0.0, 0.0, 0.4]
+    mid:  [0.2, 0.5, 0.8]
+    high: [0.6, 1.0, 1.0]
+
+  valence:
+    # Narrow 'neu' if your texts are usually neutral (e.g., [-0.2, 0, 0.2])
+    neg:  [-1.0, -1.0, -0.25, 0.0]
+    neu:  [-0.25, 0.0, 0.25]
+    pos:  [0.0, 0.5, 1.0]
+
+  w_text:
+    # If text should dominate sooner, shift 'mid' and 'high' slightly left
+    low:  [0.0, 0.0, 0.4]
+    mid:  [0.25, 0.5, 0.75]
+    high: [0.6, 1.0, 1.0]
+
+rules:
+  # Remove 'mid' or move to 'high' sooner if ASR should dominate faster
+  - IF:  ["asr_conf is high"]
+    THEN: "w_text is high"
+  - IF:  ["asr_conf is mid"]
+    THEN: "w_text is mid"
+  - IF:  ["asr_conf is low"]
+    THEN: "w_text is low"
+  - IF:  ["asr_conf is high", "valence is neg"]
+    THEN: "w_text is mid"
+  - IF:  ["asr_conf is mid", "valence is neg"]
+    THEN: "w_text is low"
+
+  # If high arousal + negative valence feels too aggressive, soften one rule or switch to 'mid'
+  - IF:  ["arousal is high", "valence is neg"]
+    THEN: "w_text is low"
+  - IF:  ["arousal is mid", "valence is neg"]
+    THEN: "w_text is low"
+  - IF:  ["arousal is low", "valence is neg"]
+    THEN: "w_text is mid"
+
+  # Duplicate or ease these rules if positive valence should win more often
+  - IF:  ["arousal is mid", "valence is pos"]
+    THEN: "w_text is high"
+  - IF:  ["arousal is low", "valence is pos"]
+    THEN: "w_text is high"
+
+  # Neutral zone: keep it at 'mid' to reduce oscillation
+  - IF:  ["valence is neu"]
+    THEN: "w_text is mid"

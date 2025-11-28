@@ -1,0 +1,15 @@
+services:
+  api:
+    build: .
+    container_name: tesis-voz-afectiva-api
+    ports:
+      - "8080:8080"
+      - "9000:9000"
+    environment:
+      WHISPER_MODEL_SIZE: "${WHISPER_MODEL_SIZE:-small}"
+      FUZZY_RULESET: "${FUZZY_RULESET:-core/ruleset/default.yaml}"
+      METRICS_PORT: "${METRICS_PORT:-9000}"
+      RUN_ID: "${RUN_ID:-docker}"
+    volumes:
+      - ./audit:/app/audit
+    restart: unless-stopped

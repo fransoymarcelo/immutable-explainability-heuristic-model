@@ -1,0 +1,56 @@
+version: 2
+
+universe:
+  asr_conf: [0.0, 1.0]
+  arousal:  [0.0, 1.0]
+  valence:  [-1.0, 1.0]
+  w_text:   [0.0, 1.0]
+
+membership:
+  asr_conf:
+    low:  [0.0, 0.0, 0.5]
+    mid:  [0.25, 0.5, 0.75]
+    high: [0.5, 1.0, 1.0]
+
+  # Change 2a: nudge arousal.high slightly higher
+  arousal:
+    low:  [0.0, 0.0, 0.4]
+    mid:  [0.25, 0.5, 0.75]
+    high: [0.7, 1.0, 1.0]
+
+  # Change 2b: narrow valence.neu
+  valence:
+    neg:  [-1.0, -1.0, 0.0]
+    neu:  [-0.2, 0.0, 0.2]
+    pos:  [0.0, 1.0, 1.0]
+
+  # Change 1: favor text earlier (shift mid/high to the left)
+  w_text:
+    low:  [0.0, 0.0, 0.4]
+    mid:  [0.15, 0.4, 0.65]
+    high: [0.45, 0.8, 1.0]
+
+rules:
+  - IF: ["asr_conf is high"]
+    THEN: "w_text is high"
+
+  - IF: ["asr_conf is mid"]
+    THEN: "w_text is mid"
+
+  - IF: ["asr_conf is low"]
+    THEN: "w_text is low"
+
+  - IF: ["arousal is high", "valence is neg"]
+    THEN: "w_text is low"
+
+  - IF: ["arousal is mid", "valence is neg"]
+    THEN: "w_text is low"
+
+  - IF: ["arousal is mid", "valence is pos"]
+    THEN: "w_text is high"
+
+  - IF: ["arousal is low", "valence is pos"]
+    THEN: "w_text is high"
+
+  - IF: ["valence is neu"]
+    THEN: "w_text is mid"

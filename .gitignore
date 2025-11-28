@@ -1,0 +1,40 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+.cache/*
+
+# Virtual environments
+.env/
+.venv/
+venv/
+ENV/
+
+# OS
+.DS_Store
+
+# audits
+audit/fired_rules/heatmaps/**
+audit/fired_rules/json/**
+
+# Data and runs
+data/**/*.wav
+data/**/*.mp3
+data/**/*.flac
+data/**/*.csv
+runs/**
+!runs/.keep
+
+# Models
+models/**
+!models/.keep
+
+# Notebooks outputs
+*.ipynb_checkpoints/
+
+# Evaluation
+predictions_emosppeech.csv
+
+# Others
+scripts/*
+
